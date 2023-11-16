@@ -1,16 +1,32 @@
 {
   "schemaVersion": 2,
   "dockerfileLines": [
-                        "FROM node:18.18.2-alpine",
-                        "RUN mkdir -p /usr/src/app",
+
+                        # Use a imagem oficial do Node como base
+                        "FROM node:18",
+                        
+                        # Crie e defina o diretório de trabalho na imagem
                         "WORKDIR /usr/src/app",
-                        "COPY ./package.json /usr/src/app/",
+                        
+                        # Copie os arquivos de dependências e o arquivo de definição de pacote para o diretório de trabalho
+                        "COPY package*.json ./",
+                        
+                        # Instale as dependências do projeto
+                        "RUN npm install",
+                        
+                        # Copie o restante do código-fonte para o diretório de trabalho na imagem
+                        "COPY . .",
+
                         "RUN npm install && npm cache clean --force",
                         "RUN npm install nest -g && npm cache clean --force",
-                        "COPY ./ /usr/src/app",
-                        "ENV NODE_ENV production",
-                        "ENV PORT 3000",
+                        
+                        # Exponha a porta na qual a aplicação estará em execução
                         "EXPOSE 3000",
+                        
+                        # Defina a variável de ambiente para produção (opcional, dependendo da configuração do NestJS)
+                        "ENV NODE_ENV=production",
+                        
+                        # Comando para iniciar a aplicação quando o contêiner for iniciado
                         "CMD [ \"npm\", \"run\", \"start:prod\" ]"
                     ]
  }
